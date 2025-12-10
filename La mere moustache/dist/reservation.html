@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Réserver - La Mère Moustache</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- VARIABLES (IDENTIQUES ACCUEIL) --- */
+        :root {
+            --color-bg: #ffffff;
+            --color-text: #1a1a1a;
+            --color-accent: #d4af37; /* Or Élégant */
+            --color-accent-hover: #b5952f;
+            --color-gray-light: #f4f4f4;
+            --color-dark: #0f0f0f;
+            
+            --font-main: 'Inter', sans-serif;
+            --font-serif: 'Cormorant Garamond', serif;
+            
+            --spacing-container: clamp(1.5rem, 5vw, 4rem);
+            --border-radius: 8px;
+            
+            --transition-smooth: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        /* RESET & BASE */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; font-size: 16px; }
+        body { 
+            font-family: var(--font-main); 
+            color: var(--color-text); 
+            background: var(--color-bg); 
+            line-height: 1.7; 
+            overflow-x: hidden;
+        }
+
+        .container { max-width: 1300px; margin: 0 auto; padding: 0 20px; }
+        a { text-decoration: none; color: inherit; transition: 0.3s ease; }
+        img { max-width: 100%; height: auto; display: block; }
+
+        /* --- HEADER & NAVIGATION (COPIÉ DE L'ACCUEIL) --- */
+        .header {
+            position: fixed;
+            top: 0; left: 0; width: 100%;
+            z-index: 1000;
+            padding: 20px 0;
+            transition: all 0.4s var(--transition-smooth);
+        }
+        
+        .header.scrolled {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 0;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: var(--font-serif);
+            font-size: 1.5rem;
+            font-weight: 600;
+            z-index: 1002;
+            position: relative;
+        }
+
+        .logo img {
+            height: 70px; /* Taille exacte de l'accueil */
+            width: auto;
+            display: block;
+        }
+
+        /* Menu Desktop */
+        .nav-desktop { display: none; gap: 3rem; align-items: center; }
+        .nav-item { position: relative; font-size: 0.95rem; letter-spacing: 0.05em; font-weight: 500; }
+        
+        /* Animation soulignement exacte de l'accueil */
+        .nav-item::after {
+            content: ''; position: absolute; bottom: -5px; left: 0; width: 0; height: 1px;
+            background: var(--color-accent); transition: width 0.3s ease;
+        }
+        .nav-item:hover::after { width: 100%; }
+        .nav-item.active { color: var(--color-accent); }
+
+        /* Bouton Header identique à l'accueil */
+        .btn-reserve {
+            background: var(--color-accent);
+            color: white;
+            padding: 12px 28px;
+            border-radius: var(--border-radius);
+            font-weight: 500;
+            transition: transform 0.3s ease, background 0.3s ease;
+        }
+        .btn-reserve:hover { background: var(--color-accent-hover); transform: translateY(-2px); }
+
+        /* Menu Mobile (Overlay) */
+        .mobile-toggle {
+            display: block;
+            background: none; border: none;
+            z-index: 1002; cursor: pointer;
+            width: 40px; height: 40px;
+            position: relative;
+        }
+        .burger-line {
+            display: block; width: 100%; height: 2px; background: var(--color-dark);
+            margin: 6px 0; transition: 0.4s;
+        }
+        
+        .nav-mobile {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100vh;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(15px);
+            z-index: 1001;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.5s var(--transition-smooth);
+            transform: scale(1.1);
+        }
+
+        .nav-mobile.active { opacity: 1; visibility: visible; transform: scale(1); }
+        
+        .nav-mobile a {
+            font-family: var(--font-serif);
+            font-size: 2.5rem;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: 0.4s;
+        }
+
+        .mobile-toggle.active .burger-line:nth-child(1) { transform: rotate(45deg) translate(6px, 6px); }
+        .mobile-toggle.active .burger-line:nth-child(2) { opacity: 0; }
+        .mobile-toggle.active .burger-line:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
+        @media (min-width: 992px) {
+            .mobile-toggle, .nav-mobile { display: none; }
+            .nav-desktop { display: flex; }
+        }
+
+        /* --- CONTENU SPÉCIFIQUE PAGE RÉSERVATION --- */
+        .reservation-wrapper {
+            min-height: 85vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 140px 20px 60px; /* Padding top ajusté pour le header fixe */
+            background: linear-gradient(180deg, #fff 0%, #fcfcfc 100%);
+        }
+
+        .res-content {
+            max-width: 800px;
+            width: 100%;
+            animation: slideUp 1s ease-out;
+        }
+
+        h1 {
+            font-family: var(--font-serif);
+            font-size: clamp(2.5rem, 8vw, 4.5rem);
+            margin-bottom: 1.5rem;
+            color: var(--color-dark);
+            font-weight: 400;
+        }
+
+        .subtitle {
+            font-size: clamp(1rem, 4vw, 1.25rem);
+            color: #666;
+            margin-bottom: 3rem;
+            line-height: 1.6;
+        }
+
+        /* Le Bouton Principal Zenchef */
+        .zenchef-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            background: var(--color-accent);
+            color: white;
+            text-decoration: none;
+            padding: 20px 40px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 500;
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .zenchef-btn:hover {
+            background: var(--color-accent-hover);
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(212, 175, 55, 0.4);
+        }
+
+        .zenchef-btn span { font-size: 1.4rem; transition: transform 0.3s; }
+        .zenchef-btn:hover span { transform: translateX(5px); }
+
+        /* Infos Complémentaires */
+        .res-info {
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid #eee;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        @media (min-width: 768px) {
+            .res-info { grid-template-columns: 1fr 1fr; }
+        }
+
+        .info-block h3 {
+            font-family: var(--font-serif);
+            font-size: 1.4rem;
+            margin-bottom: 0.5rem;
+            color: var(--color-dark);
+        }
+        .info-block p { color: #777; font-size: 0.95rem; }
+        .info-block a { color: var(--color-accent); text-decoration: none; font-weight: 500; }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* FOOTER MINI */
+        .footer-mini {
+            background: var(--color-dark);
+            color: #888;
+            padding: 30px 0;
+            text-align: center;
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="header">
+        <div class="container header-content">
+            <a href="index.html" class="logo">
+                <img src="images/logo.png" alt="La Mère Moustache" class="logo-img">
+            </a>
+            
+            <nav class="nav-desktop">
+                <a href="index.html" class="nav-item">Accueil</a>
+                <a href="restaurant.html" class="nav-item">Le Restaurant</a>
+                <a href="menu.html" class="nav-item">Carte & Menus</a>
+                <a href="contact.html" class="nav-item">Contact</a>
+                <a href="reservation.html" class="btn-reserve">Réserver</a>
+            </nav>
+
+            <button class="mobile-toggle" aria-label="Menu">
+                <span class="burger-line"></span>
+                <span class="burger-line"></span>
+                <span class="burger-line"></span>
+            </button>
+        </div>
+    </header>
+
+    <div class="nav-mobile">
+        <a href="index.html" style="transition-delay: 0.1s;">Accueil</a>
+        <a href="restaurant.html" style="transition-delay: 0.2s;">Le Restaurant</a>
+        <a href="menu.html" style="transition-delay: 0.3s;">Carte & Menus</a>
+        <a href="contact.html" style="transition-delay: 0.4s;">Contact</a>
+        <a href="reservation.html" style="transition-delay: 0.5s; color: var(--color-accent);">Réserver une table</a>
+    </div>
+
+    <main>
+        <section class="reservation-wrapper">
+            <div class="res-content">
+                <h1>Réservez votre table</h1>
+                <p class="subtitle">
+                    Assurez votre place en quelques clics via notre partenaire sécurisé Zenchef.
+                    Une confirmation immédiate vous sera envoyée.
+                </p>
+
+                <a href="https://bookings.zenchef.com/results?rid=357395&pid=1001" target="_blank" class="zenchef-btn">
+                    Réserver en Ligne
+                    <span>→</span>
+                </a>
+
+                <div class="res-info">
+                    <div class="info-block">
+                        <h3>Groupes & Privatisations</h3>
+                        <p>Pour plus de 8 personnes, merci de nous contacter directement.</p>
+                        <p><a href="tel:0982423236">09 82 42 32 36</a></p>
+                    </div>
+                    <div class="info-block">
+                        <h3>Allergies & Régimes</h3>
+                        <p>N'hésitez pas à nous préciser vos contraintes lors de la réservation ou à votre arrivée.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer-mini">
+        <p>© 2025 La Mère Moustache - 17 Rue de l'Eminee, Clermont-Ferrand</p>
+    </footer>
+
+    <script>
+        // Gestion du Menu Mobile
+        const toggleBtn = document.querySelector('.mobile-toggle');
+        const navMobile = document.querySelector('.nav-mobile');
+        const body = document.body;
+
+        toggleBtn.addEventListener('click', () => {
+            toggleBtn.classList.toggle('active');
+            navMobile.classList.toggle('active');
+            // Empêcher le scroll quand le menu est ouvert
+            body.style.overflow = navMobile.classList.contains('active') ? 'hidden' : 'auto';
+            
+            // Animation séquentielle des liens
+            const links = navMobile.querySelectorAll('a');
+            links.forEach((link, index) => {
+                if(navMobile.classList.contains('active')){
+                    link.style.opacity = '1';
+                    link.style.transform = 'translateY(0)';
+                } else {
+                    link.style.opacity = '0';
+                    link.style.transform = 'translateY(20px)';
+                }
+            });
+        });
+
+        // Header Scroll Effect
+        const header = document.querySelector('.header');
+        window.addEventListener('scroll', () => {
+            if(window.scrollY > 20) header.classList.add('scrolled');
+            else header.classList.remove('scrolled');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Le Restaurant - La Mère Moustache</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- VARIABLES MODERNES (Standardisées) --- */
+        :root {
+            --color-bg: #ffffff;
+            --color-text: #1a1a1a;
+            --color-accent: #d4af37; /* Or Élégant */
+            --color-accent-hover: #b5952f;
+            --color-gray-light: #f4f4f4;
+            --color-dark: #0f0f0f;
+            --color-off-white: #fcfcfc;
+            
+            --font-main: 'Inter', sans-serif;
+            --font-serif: 'Cormorant Garamond', serif;
+            
+            --spacing-container: clamp(1.5rem, 5vw, 4rem);
+            --border-radius: 8px;
+            --border-radius-lg: 24px;
+            
+            --transition-smooth: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        /* RESET & BASE */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; font-size: 16px; }
+        body { 
+            font-family: var(--font-main); 
+            color: var(--color-text); 
+            background: var(--color-bg); 
+            line-height: 1.7; 
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4 { font-family: var(--font-serif); font-weight: 400; line-height: 1.1; }
+        a { text-decoration: none; color: inherit; transition: 0.3s ease; }
+        img { width: 100%; height: auto; display: block; object-fit: cover; }
+
+        .container { max-width: 1300px; margin: 0 auto; padding: 0 20px; }
+
+        /* --- HEADER & NAVIGATION (Standardisé) --- */
+        .header {
+            position: fixed;
+            top: 0; left: 0; width: 100%;
+            z-index: 1000;
+            padding: 20px 0;
+            transition: all 0.4s var(--transition-smooth);
+        }
+        
+        .header.scrolled {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 0;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: var(--font-serif);
+            font-size: 1.5rem;
+            font-weight: 600;
+            z-index: 1002;
+            position: relative;
+        }
+
+        .logo img {
+            height: 70px; 
+            width: auto;
+            display: block;
+        }
+
+        /* Menu Desktop */
+        .nav-desktop { display: none; gap: 3rem; align-items: center; }
+        .nav-item { position: relative; font-size: 0.95rem; letter-spacing: 0.05em; font-weight: 500; }
+        .nav-item::after {
+            content: ''; position: absolute; bottom: -5px; left: 0; width: 0; height: 1px;
+            background: var(--color-accent); transition: width 0.3s ease;
+        }
+        .nav-item:hover::after { width: 100%; }
+        .nav-item.active { color: var(--color-accent); }
+
+        .btn-reserve {
+            background: var(--color-accent);
+            color: white;
+            padding: 12px 28px;
+            border-radius: var(--border-radius);
+            font-weight: 500;
+            transition: transform 0.3s ease, background 0.3s ease;
+        }
+        .btn-reserve:hover { background: var(--color-accent-hover); transform: translateY(-2px); }
+
+        /* Menu Mobile (Overlay) */
+        .mobile-toggle {
+            display: block;
+            background: none; border: none;
+            z-index: 1002; cursor: pointer;
+            width: 40px; height: 40px;
+            position: relative;
+        }
+        .burger-line {
+            display: block; width: 100%; height: 2px; background: var(--color-dark);
+            margin: 6px 0; transition: 0.4s;
+        }
+        
+        .nav-mobile {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100vh;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(15px);
+            z-index: 1001;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.5s var(--transition-smooth);
+            transform: scale(1.1);
+        }
+
+        .nav-mobile.active { opacity: 1; visibility: visible; transform: scale(1); }
+        
+        .nav-mobile a {
+            font-family: var(--font-serif);
+            font-size: 2.5rem;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: 0.4s;
+        }
+
+        .mobile-toggle.active .burger-line:nth-child(1) { transform: rotate(45deg) translate(6px, 6px); }
+        .mobile-toggle.active .burger-line:nth-child(2) { opacity: 0; }
+        .mobile-toggle.active .burger-line:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
+        @media (min-width: 992px) {
+            .mobile-toggle, .nav-mobile { display: none; }
+            .nav-desktop { display: flex; }
+        }
+
+        /* --- RESTAURANT SPECIFIC: HERO --- */
+        .hero {
+            height: 90vh;
+            min-height: 600px;
+            position: relative;
+            display: flex;
+            align-items: flex-end;
+            padding-bottom: 80px;
+            color: white;
+            overflow: hidden;
+        }
+        
+        .hero-bg {
+            position: absolute; inset: 0;
+            background: url('https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2e/75/7e/e4/caption.jpg?w=1200&h=-1&s=1') center/cover no-repeat;
+            z-index: 1;
+            filter: brightness(0.6);
+            animation: subtleZoom 20s infinite alternate;
+        }
+
+        .hero-content {
+            position: relative; z-index: 2;
+            width: 100%;
+            padding: 0 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            opacity: 0; animation: fadeUp 1s forwards 0.3s;
+        }
+
+        .hero h1 {
+            font-size: clamp(3.5rem, 12vw, 7rem);
+            line-height: 0.95;
+            margin-bottom: 20px;
+            text-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        .hero p {
+            font-size: 1.1rem;
+            max-width: 500px;
+            border-left: 2px solid var(--color-accent);
+            padding-left: 20px;
+            background: rgba(0,0,0,0.3);
+            backdrop-filter: blur(5px);
+            padding: 15px 20px;
+        }
+
+        /* --- SECTIONS CONTENT --- */
+        .section-story { padding: 6rem 0; }
+        
+        .story-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        /* Mobile First: Image Full Width */
+        .story-img-wrapper {
+            width: 100vw;
+            margin-left: -20px; /* Bleed edges on mobile */
+            height: 400px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .story-text-card {
+            background: white;
+            padding: 2rem;
+            margin-top: -60px; /* Chevauchement moderne */
+            position: relative;
+            z-index: 2;
+            border-radius: var(--border-radius-lg);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.08);
+            margin-right: 20px;
+        }
+
+        @media (min-width: 992px) {
+            .story-container { grid-template-columns: 1.2fr 1fr; gap: 5rem; margin-top: 50px; }
+            .story-img-wrapper { width: 100%; margin: 0; height: 600px; border-radius: var(--border-radius-lg); }
+            .story-text-card { margin: 0; padding: 3rem; box-shadow: none; background: transparent; }
+            .story-container.reverse .story-img-wrapper { order: 2; }
+        }
+
+        /* TYPOGRAPHIE RICHE */
+        .lead { font-size: 1.25rem; color: #555; margin-bottom: 1.5rem; font-weight: 300; }
+        .accent-text { color: var(--color-accent); font-family: var(--font-serif); font-style: italic; font-size: 1.5rem; margin-bottom: 1rem; display: block; }
+
+        /* --- SLIDER HORIZONTAL --- */
+        .values-section { background: var(--color-off-white); padding: 6rem 0; overflow: hidden; }
+        
+        .scroll-container {
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+            padding: 20px;
+            padding-right: 40px;
+            margin: 0 -20px;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .scroll-container::-webkit-scrollbar { display: none; }
+        
+        .value-card {
+            min-width: 280px;
+            background: white;
+            padding: 2.5rem;
+            border-radius: var(--border-radius-lg);
+            scroll-snap-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            transition: transform 0.3s;
+        }
+
+        .value-number { font-size: 4rem; font-family: var(--font-serif); color: rgba(212, 175, 55, 0.2); line-height: 1; margin-bottom: -20px; display: block; font-weight: 700; }
+        .value-card h3 { font-size: 1.5rem; margin-bottom: 1rem; position: relative; }
+
+        @media (min-width: 992px) {
+            .scroll-container { display: grid; grid-template-columns: repeat(3, 1fr); margin: 0; padding: 0; overflow: visible; }
+            .value-card { min-width: auto; }
+            .value-card:hover { transform: translateY(-10px); }
+        }
+
+        /* --- OWNER / SIGNATURE --- */
+        .owner-section { padding: 6rem 0; text-align: center; }
+        .signature-block { max-width: 800px; margin: 0 auto; position: relative; }
+        .quote-large { font-family: var(--font-serif); font-size: clamp(1.8rem, 5vw, 3rem); color: var(--color-dark); line-height: 1.3; margin-bottom: 2rem; }
+
+          /* --- FOOTER AMÉLIORÉ --- */
+        .footer {
+            background: var(--color-dark);
+            color: rgba(255,255,255,0.7);
+            padding: 3rem 0 2rem; /* Reduced padding top for mobile */
+            font-size: 0.9rem;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* 2 columns for mobile base */
+            gap: 2rem 1.5rem; /* Better spacing on mobile */
+            margin-bottom: 3rem;
+        }
+
+        /* Placement spécifique Mobile */
+        .footer-col-brand { grid-column: span 2; text-align: center; }
+        .footer-col-contact { grid-column: span 2; text-align: center; }
+        .footer-col-nav { grid-column: span 1; }
+        .footer-col-legal { grid-column: span 1; }
+
+        .footer h4 { color: white; margin-bottom: 1.2rem; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 0.05em; }
+        .footer ul { list-style: none; padding: 0; }
+        .footer li { margin-bottom: 0.5rem; }
+        .footer a { color: rgba(255,255,255,0.7); text-decoration: none; }
+        .footer a:hover { color: var(--color-accent); padding-left: 5px; }
+        
+        .socials { 
+            display: flex; 
+            gap: 15px; 
+            margin-top: 15px; 
+            justify-content: center; /* Centered on mobile */
+        }
+        .social-icon { 
+            width: 40px; height: 40px; border: 1px solid rgba(255,255,255,0.2); 
+            display: flex; align-items: center; justify-content: center; 
+            border-radius: 50%; transition: 0.3s; color: white;
+        }
+        .social-icon:hover { background: var(--color-accent); border-color: var(--color-accent); }
+
+        /* Footer Desktop */
+        @media (min-width: 768px) {
+            .footer { padding: 5rem 0 2rem; }
+            .footer-grid { grid-template-columns: repeat(4, 1fr); gap: 3rem; }
+            
+            /* Reset Spans for Desktop */
+            .footer-col-brand { grid-column: auto; text-align: left; }
+            .footer-col-contact { grid-column: auto; text-align: left; }
+            .socials { justify-content: flex-start; }
+        }
+
+        /* --- MOBILE SPECIFIC TWEAKS --- */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 3.5rem; }
+            section { padding: 4rem 0; }
+            .btn-hero { width: 100%; max-width: 300px; }
+        }
+
+
+        /* Animations */
+        @keyframes subtleZoom { from { transform: scale(1); } to { transform: scale(1.1); } }
+        @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+        
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s ease; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+    </style>
+</head>
+
+<body>
+
+    <header class="header">
+        <div class="container header-content">
+            <a href="index.html" class="logo">
+                <img src="images/logo.png" alt="La Mère Moustache" class="logo-img">
+            </a>
+            
+            <nav class="nav-desktop">
+                <a href="index.html" class="nav-item">Accueil</a>
+                <a href="restaurant.html" class="nav-item active">Le Restaurant</a>
+                <a href="menu.html" class="nav-item">Carte & Menus</a>
+                <a href="contact.html" class="nav-item">Contact</a>
+                <a href="reservation.html" class="btn-reserve">Réserver</a>
+            </nav>
+
+            <button class="mobile-toggle" aria-label="Menu">
+                <span class="burger-line"></span>
+                <span class="burger-line"></span>
+                <span class="burger-line"></span>
+            </button>
+        </div>
+    </header>
+
+    <div class="nav-mobile">
+        <a href="index.html" style="transition-delay: 0.1s;">Accueil</a>
+        <a href="restaurant.html" style="transition-delay: 0.2s; color: var(--color-accent);">Le Restaurant</a>
+        <a href="menu.html" style="transition-delay: 0.3s;">Carte & Menus</a>
+        <a href="contact.html" style="transition-delay: 0.4s;">Contact</a>
+        <a href="reservation.html" style="transition-delay: 0.5s;">Réserver une table</a>
+    </div>
+
+    <main>
+        <section class="hero">
+            <div class="hero-bg"></div>
+            <div class="hero-content">
+                <h1>Bistrot Chic<br>& Terroir</h1>
+                <p>Au 17 Rue de l'Eminee, découvrez une institution clermontoise où l'élégance rencontre la générosité de l'Auvergne.</p>
+            </div>
+        </section>
+
+        <section class="section-story container">
+            <div class="story-container reveal">
+                <div class="story-img-wrapper">
+                    <img src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2d/b6/05/ca/caption.jpg?w=1000&h=800&s=1" alt="Intérieur Restaurant">
+                </div>
+                <div class="story-text-card">
+                    <span class="accent-text">L'Histoire</span>
+                    <h2>Une Âme de Pierre et de Feu</h2>
+                    <p class="lead">Niché au cœur de Clermont-Ferrand, La Mère Moustache habite des murs qui ont une histoire.</p>
+                    <p>
+                        Sous les voûtes et la pierre de Volvic apparente, nous avons imaginé un lieu qui respecte le passé tout en embrassant la modernité. L'atmosphère y est feutrée, chaleureuse, propice aux confidences comme aux grands éclats de rire.
+                    </p>
+                    <p style="margin-top:1rem; font-size:0.95rem; color:#777;">
+                        Notre salle, décorée avec soin, mélange matériaux bruts et design contemporain pour créer ce que nous appelons le "Bistrot Chic".
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section class="values-section">
+            <div class="container">
+                <div style="margin-bottom:2rem; padding: 0 10px;">
+                    <span class="accent-text">Notre Philosophie</span>
+                    <h2 style="font-size:2.5rem;">L'Esprit Maison</h2>
+                </div>
+
+                <div class="scroll-container reveal">
+                    
+                    <div class="value-card">
+                        <span class="value-number">01</span>
+                        <h3>Le Terroir Réinventé</h3>
+                        <p>De la Truffade au Chou Farci, nous honorons les classiques auvergnats en leur apportant une légèreté et une présentation gastronomique moderne.</p>
+                    </div>
+
+                    <div class="value-card">
+                        <span class="value-number">02</span>
+                        <h3>Circuit Court</h3>
+                        <p>Pas de compromis sur la qualité. Nos viandes sont racées, nos légumes de saison, provenant directement des producteurs de la région.</p>
+                    </div>
+
+                    <div class="value-card">
+                        <span class="value-number">03</span>
+                        <h3>Convivialité</h3>
+                        <p>Chez La Mère Moustache, le service est précis mais décontracté. Nous voulons que vous vous sentiez comme invités dans une maison de famille.</p>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <section class="section-story container">
+            <div class="story-container reverse reveal">
+                <div class="story-img-wrapper">
+                    <img src="https://img.centrefrance.com/0RD4ddQVV7vLpERsohznRbdi4HdHpXeL4-2eKIBz0b4/rs:fit:1200:1200/bG9jYWw6Ly8vMDAvMDAvMDYvMTkvMDAvMjAwMDAwNjE5MDA4NA.webp" alt="Le Chef et l'équipe">
+                </div>
+                <div class="story-text-card">
+                    <span class="accent-text">En Cuisine</span>
+                    <h2>Le Geste Juste</h2>
+                    <p class="lead">"La cuisine ne triche pas. Elle est le reflet de l'âme de celui qui la prépare."</p>
+                    <p>
+                        Aux fourneaux, notre Chef et sa brigade s'affairent chaque jour avec une seule obsession : le goût. Pas d'artifices inutiles, juste la justesse des cuissons et la vérité des sauces mijotées longuement.
+                    </p>
+                    <p>
+                        C'est cette exigence quotidienne qui fait de La Mère Moustache une adresse incontournable pour les amoureux de la vraie cuisine française.
+                    </p>
+                    <a href="menu.html" style="display:inline-block; margin-top:2rem; color:var(--color-dark); font-weight:600; border-bottom:1px solid var(--color-accent);">Voir notre Carte →</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="owner-section reveal">
+            <div class="container">
+                <div class="signature-block">
+                    <p class="quote-large">"Nous avons hâte de vous accueillir et de partager notre passion."</p>
+                    <p style="margin-top:1rem; font-size:0.9rem; letter-spacing:0.1em; text-transform:uppercase;">L'Équipe Mère Moustache</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+        <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col-brand">
+                    <h3 style="font-family:var(--font-serif); color:white; margin-bottom:1rem;">La Mère Moustache</h3>
+                    <div class="socials">
+                        <a href="https://www.instagram.com/lameremoustache_clfd/" target="_blank" class="social-icon" aria-label="Instagram">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                        </a>
+                        <a href="https://www.facebook.com/meremoustacheclfd/" target="_blank" class="social-icon" aria-label="Facebook">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="footer-col-nav">
+                    <h4>Navigation</h4>
+                    <ul>
+                        <li><a href="index.html">Accueil</a></li>
+                        <li><a href="restaurant.html">Le Restaurant</a></li>
+                        <li><a href="menu.html">La Carte</a></li>
+                        <li><a href="reservation.html">Réserver</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col-legal">
+                    <h4>Mentions</h4>
+                    <ul>
+                        <li><a href="#">Légal</a></li>
+                        <li><a href="#">Confidentialité</a></li>
+                        <li><a href="#">Cookies</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col-contact">
+                    <h4>Nous trouver</h4>
+                    <p style="margin-bottom: 5px;">17 Rue de l'Eminee<br>63000 Clermont-Ferrand</p>
+                    <p><a href="tel:0982423236" style="color:white; border-bottom:1px solid var(--color-accent); font-weight: 500;">09 82 42 32 36</a></p>
+                </div>
+            </div>
+
+            <div style="text-align:center; border-top:1px solid rgba(255,255,255,0.1); padding-top:20px;">
+                <p style="font-size: 0.85rem;">© 2025 La Mère Moustache. Tous droits réservés.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // --- GESTION DU HEADER & MOBILE NAV ---
+        
+        // Header Scroll Effect
+        const header = document.querySelector('.header');
+        window.addEventListener('scroll', () => {
+            if(window.scrollY > 50) header.classList.add('scrolled');
+            else header.classList.remove('scrolled');
+        });
+
+        // Menu Mobile Toggle
+        const toggleBtn = document.querySelector('.mobile-toggle');
+        const navMobile = document.querySelector('.nav-mobile');
+        const body = document.body;
+
+        toggleBtn.addEventListener('click', () => {
+            toggleBtn.classList.toggle('active');
+            navMobile.classList.toggle('active');
+            
+            // Empêcher le scroll quand le menu est ouvert
+            body.style.overflow = navMobile.classList.contains('active') ? 'hidden' : 'auto';
+
+            // Animation séquentielle des liens
+            const links = navMobile.querySelectorAll('a');
+            links.forEach((link, index) => {
+                if(navMobile.classList.contains('active')){
+                    link.style.opacity = '1';
+                    link.style.transform = 'translateY(0)';
+                } else {
+                    link.style.opacity = '0';
+                    link.style.transform = 'translateY(20px)';
+                }
+            });
+        });
+
+        // --- SCROLL REVEAL ANIMATION ---
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) entry.target.classList.add('active');
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    </script>
+</body>
+</html>
