@@ -174,9 +174,12 @@
         .hero-bg {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 120%;
-            background: url('https://img.centrefrance.com/0RD4ddQVV7vLpERsohznRbdi4HdHpXeL4-2eKIBz0b4/rs:fit:1200:1200/bG9jYWw6Ly8vMDAvMDAvMDYvMTkvMDAvMjAwMDAwNjE5MDA4NA.webp') center/cover no-repeat;
+            /* J'ai mis une image haute définition texturée (ardoise/pierre sombre) avec des herbes/épices 
+               qui rappelle le côté "Terroir" et fait ressortir le texte blanc */
+            background: url('images/acceuil.jpg') center/cover no-repeat;
             z-index: 1;
-            filter: brightness(0.6);
+            /* J'ai légèrement augmenté l'assombrissement pour garantir que le titre soit lisible */
+            filter: brightness(0.5); 
         }
 
         .hero-content {
@@ -453,21 +456,21 @@
                 
                 <div class="gallery-grid">
                     <article class="card-item">
-                        <img src="https://lh5.googleusercontent.com/p/AF1QipMVyZaIXnppFV_Ac1DFeeSY7EGg3Juut9ka5DIV=s0" alt="Ambiance" class="card-bg">
+                        <img src="images/l'ambiance.jpg" alt="Ambiance" class="card-bg">
                         <div class="card-overlay">
                             <div class="card-title">L'Ambiance</div>
                             <p style="color:rgba(255,255,255,0.8); margin:0;">Chaleureuse et intime</p>
                         </div>
                     </article>
                     <article class="card-item">
-                        <img src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2e/75/7e/e4/caption.jpg?w=1100&h=1100&s=1" alt="Gastronomie" class="card-bg">
+                        <img src="images/la carte.jpg" alt="Gastronomie" class="card-bg">
                         <div class="card-overlay">
                             <div class="card-title">La Carte</div>
                             <p style="color:rgba(255,255,255,0.8); margin:0;">Produits frais de saison</p>
                         </div>
                     </article>
                     <article class="card-item">
-                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQhwKyofsKsyWqmH6PBN_O3qvgtSEel12b-6g&s" alt="Vins" class="card-bg">
+                        <img src="images/la cave.jfif" alt="Vins" class="card-bg">
                         <div class="card-overlay">
                             <div class="card-title">La Cave</div>
                             <p style="color:rgba(255,255,255,0.8); margin:0;">Sélection régionale</p>
